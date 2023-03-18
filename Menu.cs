@@ -14,6 +14,8 @@ namespace VideoRental
         private String sInputCustomer;
         private String sInputVideoTitle;
         private int iInputPeriod;
+        private List<Movie> MoviesList = new List<Movie>();
+        private List<Customer> CustomerList = new List<Customer>();
 
         public Menu()
         {
@@ -24,7 +26,29 @@ namespace VideoRental
 
         public void Start()
         {
-            while(bFinish)
+            Movie regular1 = new Movie("일반 1", Movie.REGULAR);
+            MoviesList.Add(regular1);
+            Movie regular2 = new Movie("일반 2", Movie.REGULAR);
+            MoviesList.Add(regular2);
+            Movie newRelease1 = new Movie("신작 1", Movie.NEW_RELEASE);
+            MoviesList.Add(newRelease1);
+            Movie newRelease2 = new Movie("신작 2", Movie.NEW_RELEASE);
+            MoviesList.Add(newRelease2);
+            Movie children1 = new Movie("어린이 1", Movie.CHILDRENS);
+            MoviesList.Add(children1);
+            Movie children2 = new Movie("어린이 2", Movie.CHILDRENS);
+            MoviesList.Add(children2);
+            Customer customer = new Customer("고객");
+            CustomerList.Add(customer);
+
+            customer.addRental(new Rental(regular1, 2));
+            customer.addRental(new Rental(regular2, 3));
+            customer.addRental(new Rental(newRelease1, 1));
+            customer.addRental(new Rental(newRelease2, 2));
+            customer.addRental(new Rental(children1, 3));
+            customer.addRental(new Rental(children2, 4));
+
+            while (bFinish)
             {
                 switch (iMenu-iStartNumber)
                 {
@@ -82,7 +106,7 @@ namespace VideoRental
             catch
             {
                 Console.WriteLine(string.Format("Please, Enter Only Number (%d~%d)", iStartNumber, iStartNumber + 5));
-                Thread.Sleep(2000);
+                Thread.Sleep(500);
             }
             if (iMenu == 6 + iStartNumber)
             {
@@ -94,6 +118,14 @@ namespace VideoRental
         private void AllVideoTitle()
         {
             Console.WriteLine("---Video Title-----");
+            Console.WriteLine("Number |  Title");
+
+            int index = 0;
+            foreach (Movie movie in MoviesList)
+            {
+                index++;
+                Console.WriteLine(String.Format("{0,-5}  |  {1}", index.ToString(), movie.getTitle()));
+            }
             iMenu = iStartNumber;
             return;
         }

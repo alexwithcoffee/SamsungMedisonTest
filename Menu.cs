@@ -17,6 +17,7 @@ namespace VideoRental
         private List<Movie> MoviesList = new List<Movie>();
         private List<Customer> CustomerList = new List<Customer>();
         private Customer CheckCustomer;
+        private Movie CheckMovie;
 
         public Menu()
         {
@@ -141,6 +142,8 @@ namespace VideoRental
 
             InputPeriod();
 
+            RentalProcess();
+
             Continue();
 
         }
@@ -177,20 +180,20 @@ namespace VideoRental
         private void InputCustomerID()
         {
             Boolean check = false;
-            while(!check)
+            while (!check)
             {
                 Console.Write("Input Customer ID : ");
                 sInputCustomer = Console.ReadLine().Trim();
-                foreach(Customer cust in CustomerList)
+                foreach (Customer cust in CustomerList)
                 {
-                    if(sInputCustomer == cust.getName())
+                    if (sInputCustomer == cust.getName())
                     {
                         CheckCustomer = cust;
                         check = true;
                         break;
                     }
                 }
-                if (check)
+                if (CheckCustomer != null)
                 {
                     return;
                 }
@@ -203,11 +206,29 @@ namespace VideoRental
 
         private void InputVideoTitle()
         {
-            while (true)
+            Boolean check = false;
+            while (!check)
             {
                 Console.Write("Input Video Title : ");
                 sInputVideoTitle = Console.ReadLine();
-                return;
+                foreach (Movie movie in MoviesList)
+                {
+                    if (sInputVideoTitle == movie.getTitle())
+                    {
+                        CheckMovie = movie;
+                        check = true;
+                        break;
+                    }
+                }
+
+                if (CheckMovie != null)
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("Video Title does not exist.");
+                }
             }
         }
 
@@ -253,9 +274,23 @@ namespace VideoRental
             }
         }
 
+        private void RentalProcess()
+        {
+            CheckCustomer.addRental(new Rental(CheckMovie, iInputPeriod));
+            CheckClear();
+        }
+
         private void PrintReceipt()
         {
             Console.Write(CheckCustomer.statement());
+            CheckClear();
+        }
+
+        private void CheckClear()
+        {
+            CheckCustomer = null;
+            CheckMovie = null;
+            iInputPeriod = 0;
         }
     }
 }

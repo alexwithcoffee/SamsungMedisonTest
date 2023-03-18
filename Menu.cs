@@ -42,6 +42,8 @@ namespace VideoRental
             MoviesList.Add(children2);
             Customer customer = new Customer("고객");
             CustomerList.Add(customer);
+            Customer customer2 = new Customer("고객2");
+            CustomerList.Add(customer2);
 
             customer.addRental(new Rental(regular1, 2));
             customer.addRental(new Rental(regular2, 3));
@@ -165,6 +167,9 @@ namespace VideoRental
         private void SaveFile()
         {
             Console.WriteLine("---File Save-----");
+            InfoFile file = new InfoFile();
+            file.SaveReceiptFile(CustomerList);
+            
             iMenu = iStartNumber;
             return;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VideoRental
 {
@@ -23,6 +24,10 @@ namespace VideoRental
             customer.addRental(new Rental( newRelease2, 2 ));
             customer.addRental(new Rental( children1, 3 ));
             customer.addRental(new Rental( children2, 4 ));
+
+            Menu startMenu = new Menu();
+
+            startMenu.Start();
 
             Console.Write(customer.statement());
         }

@@ -16,6 +16,7 @@ namespace VideoRental
         private int iInputPeriod;
         private List<Movie> MoviesList = new List<Movie>();
         private List<Customer> CustomerList = new List<Customer>();
+        private Customer CheckCustomer;
 
         public Menu()
         {
@@ -168,17 +169,35 @@ namespace VideoRental
             Console.WriteLine("---Receipt Menu-----");
 
             InputCustomerID();
+            PrintReceipt();
             iMenu = iStartNumber;
             return;
         }
 
         private void InputCustomerID()
         {
-            while(true)
+            Boolean check = false;
+            while(!check)
             {
                 Console.Write("Input Customer ID : ");
-                sInputCustomer = Console.ReadLine();
-                return;
+                sInputCustomer = Console.ReadLine().Trim();
+                foreach(Customer cust in CustomerList)
+                {
+                    if(sInputCustomer == cust.getName())
+                    {
+                        CheckCustomer = cust;
+                        check = true;
+                        break;
+                    }
+                }
+                if (check)
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("Customer ID does not exist.");
+                }
             }
         }
 
@@ -232,6 +251,11 @@ namespace VideoRental
                     Console.WriteLine("Please, Enter Only Y or N");
                 }
             }
+        }
+
+        private void PrintReceipt()
+        {
+            Console.Write(CheckCustomer.statement());
         }
     }
 }

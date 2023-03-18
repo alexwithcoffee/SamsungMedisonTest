@@ -13,6 +13,19 @@ namespace VideoRental
     }
 
     public void addRental(Rental arg) { customerRental.Add(arg); }
+
+    public Boolean removeRental(Rental arg)
+    {
+        foreach (Rental rental in customerRental)
+        {
+            if(rental.getMovie() == arg.getMovie())
+            {
+                customerRental.Remove(rental);
+                return true;
+            }
+        }
+        return false;
+    }
     public string getName() { return customerName; }
 
     public string statement()

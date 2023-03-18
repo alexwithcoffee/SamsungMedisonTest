@@ -52,7 +52,7 @@ namespace VideoRental
 
             while (bFinish)
             {
-                switch (iMenu-iStartNumber)
+                switch (iMenu - iStartNumber)
                 {
                     case 0:
                         MainMenu();
@@ -77,19 +77,19 @@ namespace VideoRental
                         break;
                 }
             }
-            
+
         }
 
         public void MainMenu()
         {
             Console.WriteLine("--Main Menu---");
             string test = string.Format("%d : Print All Video Title", iStartNumber);
-            Console.WriteLine(string.Format("{0} : Print All Video Title",iStartNumber));
-            Console.WriteLine(string.Format("{0} : Rental", iStartNumber+1));            // Rental 메뉴로 이동
-            Console.WriteLine(string.Format("{0} : Return", iStartNumber+2));            // Return 메뉴로 이동
-            Console.WriteLine(string.Format("{0} : Save to File", iStartNumber+3));      // 현재 Rental 한 모든 고객 정보를 영수증 스타일로 파일로 저장
-            Console.WriteLine(string.Format("{0} : Receipt", iStartNumber+4));           // 고객ID를 입력받아 해당 고객이 대여한 비디오 영수증을 출력
-            Console.WriteLine(string.Format("{0} : Exit", iStartNumber+5));
+            Console.WriteLine(string.Format("{0} : Print All Video Title", iStartNumber));
+            Console.WriteLine(string.Format("{0} : Rental", iStartNumber + 1));            // Rental 메뉴로 이동
+            Console.WriteLine(string.Format("{0} : Return", iStartNumber + 2));            // Return 메뉴로 이동
+            Console.WriteLine(string.Format("{0} : Save to File", iStartNumber + 3));      // 현재 Rental 한 모든 고객 정보를 영수증 스타일로 파일로 저장
+            Console.WriteLine(string.Format("{0} : Receipt", iStartNumber + 4));           // 고객ID를 입력받아 해당 고객이 대여한 비디오 영수증을 출력
+            Console.WriteLine(string.Format("{0} : Exit", iStartNumber + 5));
             Console.WriteLine();
 
             Console.Write("Select Menu: ");
@@ -153,8 +153,10 @@ namespace VideoRental
             Console.WriteLine("---Return Menu-----");
 
             InputCustomerID();
-            
+
             InputVideoTitle();
+
+            ReturnProcess();
 
             Continue();
 
@@ -277,6 +279,15 @@ namespace VideoRental
         private void RentalProcess()
         {
             CheckCustomer.addRental(new Rental(CheckMovie, iInputPeriod));
+            CheckClear();
+        }
+
+        private void ReturnProcess()
+        {
+            if (!CheckCustomer.removeRental(new Rental(CheckMovie, 0)))
+            {
+                Console.WriteLine("This is not a movie that the customer rented!!");
+            }
             CheckClear();
         }
 

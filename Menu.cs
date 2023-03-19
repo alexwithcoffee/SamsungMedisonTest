@@ -9,13 +9,15 @@ namespace VideoRental
     public class Menu
     {
         //메뉴 리스트 정보 : 메뉴 관련 변경시 값을 전체 값을 변경을 없애기 위함
-        public const int iMainMenu      = 0;
-        public const int iAllVideoTitle = 1;
-        public const int iRentalMenu    = 2;
-        public const int iReturnMenu    = 3;
-        public const int iSaveFile      = 4;
-        public const int iReceiptMenu   = 5;
-        public const int iExite         = 6;
+        public const int iMainMenu          = 0;
+        public const int iAllVideoTitle     = 1;
+        public const int iRentalMenu        = 2;
+        public const int iReturnMenu        = 3;
+        public const int iSaveFile          = 4;
+        public const int iReceiptMenu       = 5;
+        public const int iRegistCustomer    = 6;
+        public const int iRegistMovie       = 7;
+        public const int iExite             = 8;
 
 
         private int iMenu;
@@ -90,6 +92,12 @@ namespace VideoRental
                     case iReceiptMenu:
                         ReceiptMenu();
                         break;
+                    case iRegistCustomer:
+                        RegistCustomerMenu();
+                        break;
+                    case iRegistMovie:
+                        iMenu = 0;
+                        break;
                     default:
                         MainMenu();
                         break;
@@ -102,10 +110,12 @@ namespace VideoRental
         {
             Console.WriteLine("--Main Menu---");
             Console.WriteLine(string.Format("{0} : Print All Video Title", iStartNumber + iAllVideoTitle - 1));
-            Console.WriteLine(string.Format("{0} : Rental", iStartNumber + iRentalMenu - 1));            // Rental 메뉴로 이동
-            Console.WriteLine(string.Format("{0} : Return", iStartNumber + iReturnMenu - 1));            // Return 메뉴로 이동
-            Console.WriteLine(string.Format("{0} : Save to File", iStartNumber + iSaveFile - 1));      // 현재 Rental 한 모든 고객 정보를 영수증 스타일로 파일로 저장
-            Console.WriteLine(string.Format("{0} : Receipt", iStartNumber + iReceiptMenu - 1));           // 고객ID를 입력받아 해당 고객이 대여한 비디오 영수증을 출력
+            Console.WriteLine(string.Format("{0} : Rental", iStartNumber + iRentalMenu - 1));                       // Rental 메뉴로 이동
+            Console.WriteLine(string.Format("{0} : Return", iStartNumber + iReturnMenu - 1));                       // Return 메뉴로 이동
+            Console.WriteLine(string.Format("{0} : Save to File", iStartNumber + iSaveFile - 1));                   // 현재 Rental 한 모든 고객 정보를 영수증 스타일로 파일로 저장
+            Console.WriteLine(string.Format("{0} : Receipt", iStartNumber + iReceiptMenu - 1));                     // 고객ID를 입력받아 해당 고객이 대여한 비디오 영수증을 출력
+            Console.WriteLine(string.Format("{0} : Regist Customer", iStartNumber + iRegistCustomer - 1));          // 고객ID 추가
+            //Console.WriteLine(string.Format("{0} : Regist Movie", iStartNumber + iRegistMovie - 1));             // 영화 추가
             Console.WriteLine(string.Format("{0} : Exit", iStartNumber + iExite - 1));
             Console.WriteLine();
 
@@ -199,6 +209,51 @@ namespace VideoRental
             
             CheckClear();
             return;
+        }
+
+        private void RegistCustomerMenu()
+        {
+            Console.WriteLine("---Regist Customer Menu-----");
+
+            while(true)
+            {
+                Boolean CompleteCheck = true;
+                Console.Write("Input New Customer ID : ");
+                sInputCustomer = Console.ReadLine().Trim();
+                
+                if(string.IsNullOrEmpty(sInputCustomer))
+                {
+                    Console.WriteLine("Please, Enter Customer ID.");
+                    CompleteCheck = false;
+                }
+                else if(sInputCustomer.Length >= "CUSTOMER".Length && sInputCustomer.Substring(0,"CUSTOMER".Length).ToUpper().Equals("CUSTOMER"))
+                {
+                    Console.WriteLine("\"CUSTOMER\" can't be used  as a Customer ID.");
+                    CompleteCheck = false;
+                }
+                else
+                {
+                    foreach (Customer cust in CustomerList)
+                    {
+                        if (sInputCustomer == cust.getName())
+                        {
+                            Console.WriteLine("Customer ID is already exists.");
+                            CompleteCheck = false;
+                            break;
+                        }
+                    }
+                }
+                if(CompleteCheck)
+                {
+                    Customer customer = new Customer(sInputCustomer);
+                    CustomerList.Add(customer);
+                    file.WriteNewCustomer(customer, CustomerList.Count);
+                    Console.WriteLine("Customer registration completed.");
+                    iMenu = iStartNumber;
+                    return;
+                }
+            }
+
         }
 
         private void InputCustomerID()

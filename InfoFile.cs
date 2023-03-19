@@ -202,6 +202,18 @@ namespace VideoRental
             }
         }
 
+        public void WriteNewCustomer(Customer customer, int customerCount)
+        {
+            String sCustomerName = customer.getName();
+            
+            //Customer 수 갱신
+            WriteSection("CUSTOMER", customerCount.ToString());
+
+            String key = String.Format("CUSTOMER{0}", customerCount);
+            WriteSection(key, sCustomerName);
+            WriteSection(sCustomerName, 0.ToString());
+        }
+
         public List<Customer> ReadCustomerInfo(List<Movie> moviesList)
         {
             List<Customer> customerList = new List<Customer>();

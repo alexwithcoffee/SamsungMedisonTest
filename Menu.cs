@@ -32,8 +32,8 @@ namespace VideoRental
 
         public Menu()
         {
-            iStartNumber = 0;
-            iMenu = iStartNumber;
+            iStartNumber = 1;
+            iMenu = iMainMenu;
             bFinish = true;
 
             file = new InfoFile();
@@ -70,7 +70,7 @@ namespace VideoRental
 
             while (bFinish)
             {
-                switch (iMenu - iStartNumber)
+                switch (iMenu)
                 {
                     case iMainMenu:
                         MainMenu();
@@ -121,21 +121,21 @@ namespace VideoRental
             String input = Console.ReadLine().Trim();
             try
             {
-                int inputNum = int.Parse(input) - iStartNumber;
+                int inputNum = int.Parse(input);
                 if (inputNum > iStartNumber + iExite - 1 || inputNum < iStartNumber)
                 {
                     Console.WriteLine(string.Format("Please, Enter Only {0}~{1}", iStartNumber, iStartNumber + iExite - 1));
                     Thread.Sleep(2000);
                     return;
                 }
-                iMenu = inputNum + 1;
+                iMenu = inputNum - iStartNumber + 1;
             }
             catch
             {
                 Console.WriteLine(string.Format("Please, Enter Only Number (%d~%d)", iStartNumber, iStartNumber + iExite - 1));
                 Thread.Sleep(500);
             }
-            if (iMenu == iExite + iStartNumber)
+            if (iMenu == iExite)
             {
                 InfoSave();
                 bFinish = false;
@@ -146,15 +146,15 @@ namespace VideoRental
         private void AllVideoTitle()
         {
             Console.WriteLine("---Video Title-----");
-            Console.WriteLine("Number |  Title");
+            Console.WriteLine("Number | Rental Available | Genre           | Title");
 
             int index = 0;
             foreach (Movie movie in MoviesList)
             {
                 index++;
-                Console.WriteLine(String.Format("{0,-5}  |  {1}", index.ToString(), movie.getTitle()));
+                Console.WriteLine(String.Format("{0,-5}  | {1,-16} | {2,-15} | {3}", index.ToString(), movie.getRentCheck().ToString(), Movie.MovieGenreList[movie.getPriceCode()], movie.getTitle()));
             }
-            iMenu = iStartNumber;
+            iMenu = iMainMenu;
             return;
         }
 
@@ -193,7 +193,7 @@ namespace VideoRental
             Console.WriteLine("---File Save-----");
             file.SaveReceiptFile(CustomerList);
 
-            iMenu = iStartNumber;
+            iMenu = iMainMenu;
             return;
         }
 
@@ -213,44 +213,42 @@ namespace VideoRental
         {
             Console.WriteLine("---Regist Customer Menu-----");
 
-            while(true)
-            {
-                Boolean CompleteCheck = true;
-                Console.Write("Input New Customer ID : ");
-                String sInputCustomer = Console.ReadLine().Trim();
+            Boolean CompleteCheck = true;
+            Console.Write("Input New Customer ID : ");
+            String sInputCustomer = Console.ReadLine().Trim();
                 
-                if(string.IsNullOrEmpty(sInputCustomer))
+            if(string.IsNullOrEmpty(sInputCustomer))
+            {
+                Console.WriteLine("Please, Enter Customer ID.");
+                CompleteCheck = false;
+            }
+            else if(sInputCustomer.Length >= "CUSTOMER".Length && sInputCustomer.Substring(0,"CUSTOMER".Length).ToUpper().Equals("CUSTOMER"))
+            {
+                Console.WriteLine("\"CUSTOMER\" can't be used  as a Customer ID.");
+                CompleteCheck = false;
+            }
+            else
+            {
+                foreach (Customer cust in CustomerList)
                 {
-                    Console.WriteLine("Please, Enter Customer ID.");
-                    CompleteCheck = false;
-                }
-                else if(sInputCustomer.Length >= "CUSTOMER".Length && sInputCustomer.Substring(0,"CUSTOMER".Length).ToUpper().Equals("CUSTOMER"))
-                {
-                    Console.WriteLine("\"CUSTOMER\" can't be used  as a Customer ID.");
-                    CompleteCheck = false;
-                }
-                else
-                {
-                    foreach (Customer cust in CustomerList)
+                    if (sInputCustomer == cust.getName())
                     {
-                        if (sInputCustomer == cust.getName())
-                        {
-                            Console.WriteLine("Customer ID is already exists.");
-                            CompleteCheck = false;
-                            break;
-                        }
+                        Console.WriteLine("Customer ID is already exists.");
+                        CompleteCheck = false;
+                        break;
                     }
                 }
-                if(CompleteCheck)
-                {
-                    Customer customer = new Customer(sInputCustomer);
-                    CustomerList.Add(customer);
-                    file.WriteNewCustomer(customer, CustomerList.Count);
-                    Console.WriteLine("Customer registration completed.");
-                    iMenu = iStartNumber;
-                    return;
-                }
             }
+            if(CompleteCheck)
+            {
+                Customer customer = new Customer(sInputCustomer);
+                CustomerList.Add(customer);
+                file.WriteNewCustomer(customer, CustomerList.Count);
+                Console.WriteLine("Customer registration completed.");
+            }
+
+            iMenu = iMainMenu;
+            return;
 
         }
 
@@ -312,7 +310,7 @@ namespace VideoRental
                 }
                 else if (Continue == "N" || Continue == "n")
                 {
-                    iMenu = iStartNumber;
+                    iMenu = iMainMenu;
                     return;
                 }
                 else
@@ -452,7 +450,7 @@ namespace VideoRental
             if(customer)
             {
                 CheckCustomer = null;
-                iMenu = iStartNumber;
+                iMenu = iMainMenu;
             }
             CheckMovie = null;
             iInputPeriod = 0;

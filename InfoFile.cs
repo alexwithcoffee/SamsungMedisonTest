@@ -10,9 +10,14 @@ namespace VideoRental
 {
     class InfoFile
     {
+        public String[] MovieChapterList;
         public InfoFile()
         {
-
+            MovieChapterList = new string[Movie.CHAPTER_COUNT];
+            MovieChapterList[Movie.REGULAR] = "REGULAR";
+            MovieChapterList[Movie.NEW_RELEASE] = "NEW_RELEASE";
+            MovieChapterList[Movie.CHILDRENS] = "CHILDRENS";
+            MovieChapterList[Movie.EXAMPLE_GENRE] = "EXAMPLE_GENRE";
         }
 
         public void SaveReceiptFile(List<Customer> customersList)
@@ -21,7 +26,7 @@ namespace VideoRental
             int index = 0;
             foreach (Customer customer in customersList)
             {
-                if(index == 0)
+                if (index == 0)
                 {
                     File.WriteAllText(path, customer.statement());
                     index++;
@@ -46,21 +51,21 @@ namespace VideoRental
                 String key = "";
                 switch (movie.getPriceCode())
                 {
-                    case 0:
+                    case Movie.REGULAR:
                         iREGULAR++;
-                        key = String.Format("REGULAR{0}", iREGULAR);
+                        key = String.Format("{0}{1}", MovieChapterList[Movie.REGULAR], iREGULAR);
                         break;
-                    case 1:
+                    case Movie.NEW_RELEASE:
                         iNEW_RELEASE++;
-                        key = String.Format("NEW_RELEASE{0}", iNEW_RELEASE);
+                        key = String.Format("{0}{1}", MovieChapterList[Movie.NEW_RELEASE], iNEW_RELEASE);
                         break;
-                    case 2:
+                    case Movie.CHILDRENS:
                         iCHILDRENS++;
-                        key = String.Format("CHILDRENS{0}", iCHILDRENS);
+                        key = String.Format("{0}{1}", MovieChapterList[Movie.CHILDRENS], iCHILDRENS);
                         break;
-                    case 3:
+                    case Movie.EXAMPLE_GENRE:
                         iEXAMPLE_GENRE++;
-                        key = String.Format("EXAMPLE_GENRE{0}", iEXAMPLE_GENRE);
+                        key = String.Format("{0}{1}", MovieChapterList[Movie.EXAMPLE_GENRE], iEXAMPLE_GENRE);
                         break;
                     default:
                         break;
@@ -76,6 +81,35 @@ namespace VideoRental
             WriteSection("NEW_RELEASE", iNEW_RELEASE.ToString());
             WriteSection("CHILDRENS", iCHILDRENS.ToString());
             WriteSection("EXAMPLE_GENRE", iEXAMPLE_GENRE.ToString());
+        }
+
+        //영화 정보 읽기
+        public List<Movie> ReadMovieInfo()
+        {
+            List<Movie> movieList = new List<Movie>();
+
+            for (int iChapter = 0; iChapter < Movie.CHAPTER_COUNT; iChapter++)
+            {
+                String sReadValue = ReadSection(MovieChapterList[iChapter]);
+                int iReadCount;
+
+                if (int.TryParse(sReadValue, out iReadCount))
+                {
+                    for (int iMovieChpaterNum = 1; iMovieChpaterNum <= iReadCount; iMovieChpaterNum++)
+                    {
+                        String sReadKey = String.Format("{0}{1}", MovieChapterList[iChapter], iMovieChpaterNum);
+                        String sMovieTitle = ReadSection(sReadKey);
+
+                        if (!string.IsNullOrEmpty(sMovieTitle))
+                        {
+                            Movie movie = new Movie(sMovieTitle, iChapter);
+                            movieList.Add(movie);
+                        }
+                    }
+                }
+            }
+
+            return movieList;
         }
 
         //Customer정보 저장
@@ -97,7 +131,7 @@ namespace VideoRental
 
 
                 //Customer의 Rental 정보 List 저장
-                foreach(Rental rental in custom.GetRentals())
+                foreach (Rental rental in custom.GetRentals())
                 {
                     iRentCount++;
                     String KeyName = String.Format("{0}_Title{1}", customerName, iRentCount);
@@ -115,6 +149,53 @@ namespace VideoRental
             }
             //Customer 인원 저장
             WriteSection("CUSTOMER", iCUSTOMER.ToString());
+        }
+
+        public List<Customer> ReadCustomerInfo(List<Movie> moviesList)
+        {
+            List<Customer> customerList = new List<Customer>();
+
+            String sReadValue = ReadSection("CUSTOMER");
+            int iReadCount;
+            if (int.TryParse(sReadValue, out iReadCount))
+            {
+                for (int iCustomer = 1; iCustomer <= iReadCount; iCustomer++)
+                {
+                    String key = String.Format("CUSTOMER{0}", iCustomer);
+                    String sCustomerName = ReadSection(key);
+
+                    Customer cCustomer = new Customer(sCustomerName);
+
+                    int iRentalCount;
+                    if (int.TryParse(ReadSection(sCustomerName), out iRentalCount))
+                    {
+                        for (int iRental = 1; iRental <= iRentalCount; iRental++)
+                        {
+                            key = String.Format("{0}_Title{1}", sCustomerName, iRental);
+                            String sRental_Title = ReadSection(key);
+
+                            key = String.Format("{0}_Proid{1}", sCustomerName, iRental);
+                            int iRental_Proid;
+
+                            if (int.TryParse(ReadSection(key), out iRental_Proid))
+                            {
+                                foreach (Movie movie in moviesList)
+                                {
+                                    if (sRental_Title.Equals(movie.getTitle()))
+                                    {
+                                        cCustomer.addRental(new Rental(movie, iRental_Proid));
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    customerList.Add(cCustomer);
+                }
+            }
+
+            return customerList;
         }
 
 
@@ -136,5 +217,11 @@ namespace VideoRental
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
         }
+
+        private String ReadSection(String Key)
+        {
+            return ConfigurationManager.AppSettings[Key];
+        }
+
     }
 }

@@ -41,29 +41,32 @@ namespace VideoRental
 
         public void Start()
         {
-            Movie regular1 = new Movie("일반 1", Movie.REGULAR);
-            MoviesList.Add(regular1);
-            Movie regular2 = new Movie("일반 2", Movie.REGULAR);
-            MoviesList.Add(regular2);
-            Movie newRelease1 = new Movie("신작 1", Movie.NEW_RELEASE);
-            MoviesList.Add(newRelease1);
-            Movie newRelease2 = new Movie("신작 2", Movie.NEW_RELEASE);
-            MoviesList.Add(newRelease2);
-            Movie children1 = new Movie("어린이 1", Movie.CHILDRENS);
-            MoviesList.Add(children1);
-            Movie children2 = new Movie("어린이 2", Movie.CHILDRENS);
-            MoviesList.Add(children2);
-            Customer customer = new Customer("고객");
-            CustomerList.Add(customer);
-            Customer customer2 = new Customer("고객2");
-            CustomerList.Add(customer2);
+            InfoRead();
 
-            customer.addRental(new Rental(regular1, 2));
-            customer.addRental(new Rental(regular2, 3));
-            customer.addRental(new Rental(newRelease1, 1));
-            customer.addRental(new Rental(newRelease2, 2));
-            customer.addRental(new Rental(children1, 3));
-            customer.addRental(new Rental(children2, 4));
+            if(MoviesList.Count == 0 && CustomerList.Count == 0)
+            {
+                Movie regular1 = new Movie("일반 1", Movie.REGULAR);
+                MoviesList.Add(regular1);
+                Movie regular2 = new Movie("일반 2", Movie.REGULAR);
+                MoviesList.Add(regular2);
+                Movie newRelease1 = new Movie("신작 1", Movie.NEW_RELEASE);
+                MoviesList.Add(newRelease1);
+                Movie newRelease2 = new Movie("신작 2", Movie.NEW_RELEASE);
+                MoviesList.Add(newRelease2);
+                Movie children1 = new Movie("어린이 1", Movie.CHILDRENS);
+                MoviesList.Add(children1);
+                Movie children2 = new Movie("어린이 2", Movie.CHILDRENS);
+                MoviesList.Add(children2);
+                Customer customer = new Customer("고객");
+                CustomerList.Add(customer);
+
+                customer.addRental(new Rental(regular1, 2));
+                customer.addRental(new Rental(regular2, 3));
+                customer.addRental(new Rental(newRelease1, 1));
+                customer.addRental(new Rental(newRelease2, 2));
+                customer.addRental(new Rental(children1, 3));
+                customer.addRental(new Rental(children2, 4));
+            }
 
             while (bFinish)
             {
@@ -181,7 +184,7 @@ namespace VideoRental
         {
             Console.WriteLine("---File Save-----");
             file.SaveReceiptFile(CustomerList);
-            
+
             iMenu = iStartNumber;
             return;
         }
@@ -325,6 +328,12 @@ namespace VideoRental
         {
             file.WriteMovieInfo(MoviesList);
             file.WriteCustomerInfo(CustomerList);
+        }
+
+        private void InfoRead()
+        {
+            MoviesList = file.ReadMovieInfo();
+            CustomerList = file.ReadCustomerInfo(MoviesList);
         }
     }
 }

@@ -26,6 +26,9 @@ namespace VideoRental
             }
             return false;
         }
+
+        public List<Rental> GetRentals() { return customerRental; }
+
         public string getName() { return customerName; }
 
         public string statement()

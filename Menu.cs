@@ -28,12 +28,15 @@ namespace VideoRental
         private List<Customer> CustomerList = new List<Customer>();
         private Customer CheckCustomer;
         private Movie CheckMovie;
+        private InfoFile file;
 
         public Menu()
         {
             iStartNumber = 0;
             iMenu = iStartNumber;
             bFinish = true;
+
+            file = new InfoFile();
         }
 
         public void Start()
@@ -123,6 +126,7 @@ namespace VideoRental
             }
             if (iMenu == iExite + iStartNumber)
             {
+                InfoSave();
                 bFinish = false;
             }
             return;
@@ -176,7 +180,6 @@ namespace VideoRental
         private void SaveFile()
         {
             Console.WriteLine("---File Save-----");
-            InfoFile file = new InfoFile();
             file.SaveReceiptFile(CustomerList);
             
             iMenu = iStartNumber;
@@ -316,6 +319,12 @@ namespace VideoRental
             CheckCustomer = null;
             CheckMovie = null;
             iInputPeriod = 0;
+        }
+
+        private void InfoSave()
+        {
+            file.WriteMovieInfo(MoviesList);
+            file.WriteCustomerInfo(CustomerList);
         }
     }
 }

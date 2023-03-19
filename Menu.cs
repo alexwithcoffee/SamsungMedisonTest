@@ -8,6 +8,16 @@ namespace VideoRental
 {
     public class Menu
     {
+        //메뉴 리스트 정보 : 메뉴 관련 변경시 값을 전체 값을 변경을 없애기 위함
+        public const int iMainMenu      = 0;
+        public const int iAllVideoTitle = 1;
+        public const int iRentalMenu    = 2;
+        public const int iReturnMenu    = 3;
+        public const int iSaveFile      = 4;
+        public const int iReceiptMenu   = 5;
+        public const int iExite         = 6;
+
+
         private int iMenu;
         private int iStartNumber;
         private Boolean bFinish;
@@ -56,22 +66,22 @@ namespace VideoRental
             {
                 switch (iMenu - iStartNumber)
                 {
-                    case 0:
+                    case iMainMenu:
                         MainMenu();
                         break;
-                    case 1:
+                    case iAllVideoTitle:
                         AllVideoTitle();
                         break;
-                    case 2:
+                    case iRentalMenu:
                         RentalMenu();
                         break;
-                    case 3:
+                    case iReturnMenu:
                         ReturnMenu();
                         break;
-                    case 4:
+                    case iSaveFile:
                         SaveFile();
                         break;
-                    case 5:
+                    case iReceiptMenu:
                         ReceiptMenu();
                         break;
                     default:
@@ -85,13 +95,12 @@ namespace VideoRental
         public void MainMenu()
         {
             Console.WriteLine("--Main Menu---");
-            string test = string.Format("%d : Print All Video Title", iStartNumber);
-            Console.WriteLine(string.Format("{0} : Print All Video Title", iStartNumber));
-            Console.WriteLine(string.Format("{0} : Rental", iStartNumber + 1));            // Rental 메뉴로 이동
-            Console.WriteLine(string.Format("{0} : Return", iStartNumber + 2));            // Return 메뉴로 이동
-            Console.WriteLine(string.Format("{0} : Save to File", iStartNumber + 3));      // 현재 Rental 한 모든 고객 정보를 영수증 스타일로 파일로 저장
-            Console.WriteLine(string.Format("{0} : Receipt", iStartNumber + 4));           // 고객ID를 입력받아 해당 고객이 대여한 비디오 영수증을 출력
-            Console.WriteLine(string.Format("{0} : Exit", iStartNumber + 5));
+            Console.WriteLine(string.Format("{0} : Print All Video Title", iStartNumber + iAllVideoTitle - 1));
+            Console.WriteLine(string.Format("{0} : Rental", iStartNumber + iRentalMenu - 1));            // Rental 메뉴로 이동
+            Console.WriteLine(string.Format("{0} : Return", iStartNumber + iReturnMenu - 1));            // Return 메뉴로 이동
+            Console.WriteLine(string.Format("{0} : Save to File", iStartNumber + iSaveFile - 1));      // 현재 Rental 한 모든 고객 정보를 영수증 스타일로 파일로 저장
+            Console.WriteLine(string.Format("{0} : Receipt", iStartNumber + iReceiptMenu - 1));           // 고객ID를 입력받아 해당 고객이 대여한 비디오 영수증을 출력
+            Console.WriteLine(string.Format("{0} : Exit", iStartNumber + iExite - 1));
             Console.WriteLine();
 
             Console.Write("Select Menu: ");
@@ -99,9 +108,9 @@ namespace VideoRental
             try
             {
                 int inputNum = int.Parse(input) - iStartNumber;
-                if (inputNum > 5)
+                if (inputNum > iStartNumber + iExite - 1 || inputNum < iStartNumber)
                 {
-                    Console.WriteLine(string.Format("Please, Enter Only {0}~{1}", iStartNumber, iStartNumber + 5));
+                    Console.WriteLine(string.Format("Please, Enter Only {0}~{1}", iStartNumber, iStartNumber + iExite - 1));
                     Thread.Sleep(2000);
                     return;
                 }
@@ -109,10 +118,10 @@ namespace VideoRental
             }
             catch
             {
-                Console.WriteLine(string.Format("Please, Enter Only Number (%d~%d)", iStartNumber, iStartNumber + 5));
+                Console.WriteLine(string.Format("Please, Enter Only Number (%d~%d)", iStartNumber, iStartNumber + iExite - 1));
                 Thread.Sleep(500);
             }
-            if (iMenu == 6 + iStartNumber)
+            if (iMenu == iExite + iStartNumber)
             {
                 bFinish = false;
             }

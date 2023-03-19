@@ -115,6 +115,9 @@ namespace VideoRental
         //Customer정보 저장
         public void WriteCustomerInfo(List<Customer> CustomerList)
         {
+            //Customer 인원 저장
+            WriteSection("CUSTOMER", CustomerList.Count.ToString());
+
             int iCUSTOMER = 0;
             foreach (Customer custom in CustomerList)
             {
@@ -129,6 +132,8 @@ namespace VideoRental
                     WriteSection(key, customerName);
                 }
 
+                //Customer의 렌탈 수 저장 : 읽을 때 갯수만큼 읽으면 됨
+                WriteSection(customerName, custom.GetRentals().Count.ToString());
 
                 //Customer의 Rental 정보 List 저장
                 foreach (Rental rental in custom.GetRentals())
@@ -142,13 +147,7 @@ namespace VideoRental
                     String sRental_Proid = rental.getDaysRented().ToString();
                     WriteSection(KeyName, sRental_Proid);
                 }
-
-                //Customer의 렌탈 수 저장 : 읽을 때 갯수만큼 읽으면 됨
-                WriteSection(customerName, iRentCount.ToString());
-
             }
-            //Customer 인원 저장
-            WriteSection("CUSTOMER", iCUSTOMER.ToString());
         }
 
         public List<Customer> ReadCustomerInfo(List<Movie> moviesList)

@@ -297,7 +297,14 @@ namespace VideoRental
 
         private void RentalProcess()
         {
-            CheckCustomer.addRental(new Rental(CheckMovie, iInputPeriod));
+            if(CheckMovie.getRentCheck())
+            {
+                CheckCustomer.addRental(new Rental(CheckMovie, iInputPeriod));
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Rent Fail : \"{0}\" has already been rented!!", CheckMovie.getTitle()));
+            }
         }
 
         private void ReturnProcess()

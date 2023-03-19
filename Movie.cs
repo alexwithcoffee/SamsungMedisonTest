@@ -17,13 +17,18 @@ namespace VideoRental
         {
             movieTitle = title;
             moviePriceCode = priceCode;
+            rentCheck = true;
         }
 
         public int getPriceCode() { return moviePriceCode; }
         public void setPriceCode(int args) { moviePriceCode = args; }
         public string getTitle() { return movieTitle; }
 
+        public void setRent(Boolean check) { rentCheck = check; }
+        public Boolean getRentCheck() { return rentCheck; }
+
         private string movieTitle;
+        private Boolean rentCheck;
         int moviePriceCode;
     }
 }

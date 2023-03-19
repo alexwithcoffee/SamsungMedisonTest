@@ -12,7 +12,11 @@ namespace VideoRental
             customerName = name;
         }
 
-        public void addRental(Rental arg) { customerRental.Add(arg); }
+        public void addRental(Rental arg) 
+        { 
+            customerRental.Add(arg);
+            arg.getMovie().setRent(false);
+        }
 
         public Boolean removeRental(Rental arg)
         {
@@ -20,6 +24,7 @@ namespace VideoRental
             {
                 if (rental.getMovie() == arg.getMovie())
                 {
+                    rental.getMovie().setRent(true);
                     customerRental.Remove(rental);
                     return true;
                 }

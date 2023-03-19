@@ -10,14 +10,8 @@ namespace VideoRental
 {
     class InfoFile
     {
-        public String[] MovieChapterList;
         public InfoFile()
         {
-            MovieChapterList = new string[Movie.CHAPTER_COUNT];
-            MovieChapterList[Movie.REGULAR] = "REGULAR";
-            MovieChapterList[Movie.NEW_RELEASE] = "NEW_RELEASE";
-            MovieChapterList[Movie.CHILDRENS] = "CHILDRENS";
-            MovieChapterList[Movie.EXAMPLE_GENRE] = "EXAMPLE_GENRE";
         }
 
         public void SaveReceiptFile(List<Customer> customersList)
@@ -53,19 +47,19 @@ namespace VideoRental
                 {
                     case Movie.REGULAR:
                         iREGULAR++;
-                        key = String.Format("{0}{1}", MovieChapterList[Movie.REGULAR], iREGULAR);
+                        key = String.Format("{0}{1}", Movie.MovieGenreList[Movie.REGULAR], iREGULAR);
                         break;
                     case Movie.NEW_RELEASE:
                         iNEW_RELEASE++;
-                        key = String.Format("{0}{1}", MovieChapterList[Movie.NEW_RELEASE], iNEW_RELEASE);
+                        key = String.Format("{0}{1}", Movie.MovieGenreList[Movie.NEW_RELEASE], iNEW_RELEASE);
                         break;
                     case Movie.CHILDRENS:
                         iCHILDRENS++;
-                        key = String.Format("{0}{1}", MovieChapterList[Movie.CHILDRENS], iCHILDRENS);
+                        key = String.Format("{0}{1}", Movie.MovieGenreList[Movie.CHILDRENS], iCHILDRENS);
                         break;
                     case Movie.EXAMPLE_GENRE:
                         iEXAMPLE_GENRE++;
-                        key = String.Format("{0}{1}", MovieChapterList[Movie.EXAMPLE_GENRE], iEXAMPLE_GENRE);
+                        key = String.Format("{0}{1}", Movie.MovieGenreList[Movie.EXAMPLE_GENRE], iEXAMPLE_GENRE);
                         break;
                     default:
                         break;
@@ -88,21 +82,21 @@ namespace VideoRental
         {
             List<Movie> movieList = new List<Movie>();
 
-            for (int iChapter = 0; iChapter < Movie.CHAPTER_COUNT; iChapter++)
+            for (int iGenre = 0; iGenre < Movie.GENRE_COUNT; iGenre++)
             {
-                String sReadValue = ReadSection(MovieChapterList[iChapter]);
+                String sReadValue = ReadSection(Movie.MovieGenreList[iGenre]);
                 int iReadCount;
 
                 if (int.TryParse(sReadValue, out iReadCount))
                 {
                     for (int iMovieChpaterNum = 1; iMovieChpaterNum <= iReadCount; iMovieChpaterNum++)
                     {
-                        String sReadKey = String.Format("{0}{1}", MovieChapterList[iChapter], iMovieChpaterNum);
+                        String sReadKey = String.Format("{0}{1}", Movie.MovieGenreList[iGenre], iMovieChpaterNum);
                         String sMovieTitle = ReadSection(sReadKey);
 
                         if (!string.IsNullOrEmpty(sMovieTitle))
                         {
-                            Movie movie = new Movie(sMovieTitle, iChapter);
+                            Movie movie = new Movie(sMovieTitle, iGenre);
                             movieList.Add(movie);
                         }
                     }

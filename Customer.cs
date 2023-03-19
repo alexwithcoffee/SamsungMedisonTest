@@ -47,7 +47,7 @@ namespace VideoRental
             newResult.AppendLine("-------------------- NEW Rental Receipt --------------------");
             newResult.AppendLine("Customer : " + getName());
             newResult.AppendLine("------------------------------------------------------------");
-            newResult.AppendLine(String.Format("{0,-15}|{1,-20}\t|{2,-7}|{3}", "CHAPTER","TITLE","PERIOD","PRICE"));
+            newResult.AppendLine(String.Format("{0,-15}|{1,-20}\t|{2,-7}|{3}", "GENRE", "TITLE","PERIOD","PRICE"));
             newResult.AppendLine("------------------------------------------------------------");
 
 

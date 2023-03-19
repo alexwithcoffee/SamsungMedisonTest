@@ -11,7 +11,8 @@ namespace VideoRental
         public const int NEW_RELEASE    = 1;
         public const int CHILDRENS      = 2;
         public const int EXAMPLE_GENRE  = 3;
-        public const int CHAPTER_COUNT  = 4;
+        public const int GENRE_COUNT = 4;
+        static public readonly String[] MovieGenreList = { "REGULAR", "NEW_RELEASE", "CHILDRENS", "EXAMPLE_GENRE" };
 
         public Movie(string title, int priceCode = REGULAR)
         {

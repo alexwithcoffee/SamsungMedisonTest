@@ -23,8 +23,6 @@ namespace VideoRental
         private int iMenu;
         private int iStartNumber;
         private Boolean bFinish;
-        private String sInputCustomer;
-        private String sInputVideoTitle;
         private int iInputPeriod;
         private List<Movie> MoviesList = new List<Movie>();
         private List<Customer> CustomerList = new List<Customer>();
@@ -96,7 +94,7 @@ namespace VideoRental
                         RegistCustomerMenu();
                         break;
                     case iRegistMovie:
-                        iMenu = 0;
+                        RegistMovieMenu();
                         break;
                     default:
                         MainMenu();
@@ -115,7 +113,7 @@ namespace VideoRental
             Console.WriteLine(string.Format("{0} : Save to File", iStartNumber + iSaveFile - 1));                   // 현재 Rental 한 모든 고객 정보를 영수증 스타일로 파일로 저장
             Console.WriteLine(string.Format("{0} : Receipt", iStartNumber + iReceiptMenu - 1));                     // 고객ID를 입력받아 해당 고객이 대여한 비디오 영수증을 출력
             Console.WriteLine(string.Format("{0} : Regist Customer", iStartNumber + iRegistCustomer - 1));          // 고객ID 추가
-            //Console.WriteLine(string.Format("{0} : Regist Movie", iStartNumber + iRegistMovie - 1));             // 영화 추가
+            Console.WriteLine(string.Format("{0} : Regist Movie", iStartNumber + iRegistMovie - 1));             // 영화 추가
             Console.WriteLine(string.Format("{0} : Exit", iStartNumber + iExite - 1));
             Console.WriteLine();
 
@@ -219,7 +217,7 @@ namespace VideoRental
             {
                 Boolean CompleteCheck = true;
                 Console.Write("Input New Customer ID : ");
-                sInputCustomer = Console.ReadLine().Trim();
+                String sInputCustomer = Console.ReadLine().Trim();
                 
                 if(string.IsNullOrEmpty(sInputCustomer))
                 {
@@ -256,6 +254,74 @@ namespace VideoRental
 
         }
 
+        private void RegistMovieMenu()
+        {
+            Console.WriteLine("---Regist Movie Menu-----");
+
+            String sInputVideoTitle;
+            int iGenreNumber;
+            while (true)
+            {
+                Boolean TitleCheck = true;
+                Console.Write("Input New Movie Title : ");
+                sInputVideoTitle = Console.ReadLine();
+                foreach(Movie movie in MoviesList)
+                {
+                    if(sInputVideoTitle.Equals(movie.getTitle()))
+                    {
+                        Console.WriteLine(String.Format("{0} is already exists.", sInputVideoTitle));
+                        TitleCheck = false;
+                    }
+                }
+                if(TitleCheck)
+                {
+                    break;
+                }
+            }
+
+            while(true)
+            {
+                Console.WriteLine("--- Movie Genre List ---");
+                for (int iGenre = 0; iGenre < Movie.GENRE_COUNT; iGenre++)
+                {
+                    Console.WriteLine(String.Format("{0,-2}|{1}", iGenre + iStartNumber, Movie.MovieGenreList[iGenre]));
+                }
+                Console.Write("Select Genre Number: ");
+                String inputGenre = Console.ReadLine().Trim();
+                if (int.TryParse(inputGenre, out iGenreNumber))
+                {
+                    if(iStartNumber <= iGenreNumber && iGenreNumber < Movie.GENRE_COUNT)
+                    {
+                        Movie movie = new Movie(sInputVideoTitle, iGenreNumber);
+                        MoviesList.Add(movie);
+                        break;
+                    }
+                }
+            }
+
+            file.WriteMovieInfo(MoviesList);
+
+            while (true)
+            {
+                Console.Write("Do you want to add more? (Y/N) : ");
+                String Continue = Console.ReadLine();
+
+                if (Continue == "Y" || Continue == "y")
+                {
+                    return;
+                }
+                else if (Continue == "N" || Continue == "n")
+                {
+                    iMenu = iStartNumber;
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("Please, Enter Only Y or N");
+                }
+            }
+        }
+
         private void InputCustomerID()
         {
             if(CheckCustomer != null)
@@ -265,7 +331,7 @@ namespace VideoRental
             while (CheckCustomer == null)
             {
                 Console.Write("Input Customer ID : ");
-                sInputCustomer = Console.ReadLine().Trim();
+                String sInputCustomer = Console.ReadLine().Trim();
                 foreach (Customer cust in CustomerList)
                 {
                     if (sInputCustomer == cust.getName())
@@ -286,7 +352,7 @@ namespace VideoRental
             while (true)
             {
                 Console.Write("Input Video Title : ");
-                sInputVideoTitle = Console.ReadLine();
+                String sInputVideoTitle = Console.ReadLine();
                 foreach (Movie movie in MoviesList)
                 {
                     if (sInputVideoTitle == movie.getTitle())

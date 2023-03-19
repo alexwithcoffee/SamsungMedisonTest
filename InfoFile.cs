@@ -150,6 +150,58 @@ namespace VideoRental
             }
         }
 
+        public void WriteRental(Customer customer, Rental rental)
+        {
+            String sCustomerName = customer.getName();
+            int iRentNumber = customer.GetRentals().Count;
+            //Customer의 렌탈 수 저장 : 읽을 때 갯수만큼 읽으면 됨
+            WriteSection(sCustomerName, iRentNumber.ToString());
+
+            String KeyName = String.Format("{0}_Title{1}", sCustomerName, iRentNumber);
+            String sRental_Title = rental.getMovie().getTitle();
+            WriteSection(KeyName, sRental_Title);
+
+            KeyName = String.Format("{0}_Proid{1}", sCustomerName, iRentNumber);
+            String sRental_Proid = rental.getDaysRented().ToString();
+            WriteSection(KeyName, sRental_Proid);
+        }
+
+        public void ReturnInfo(Customer customer)
+        {
+            String sCustomerName = customer.getName();
+            int iRentCount = 0;
+            String KeyName;
+
+            if (int.TryParse(ReadSection(sCustomerName),out iRentCount))
+            {
+                for(int i = 1; i <= iRentCount; i++)
+                {
+                    KeyName = String.Format("{0}_Title{1}", sCustomerName, i);
+                    RemoveSection(KeyName);
+
+                    KeyName = String.Format("{0}_Proid{1}", sCustomerName, i);
+                    RemoveSection(KeyName);
+                }
+            }
+
+            //Customer의 렌탈 수 저장 : 읽을 때 갯수만큼 읽으면 됨
+            WriteSection(sCustomerName, customer.GetRentals().Count.ToString());
+
+            //Customer의 Rental 정보 List 저장
+            iRentCount = 0;
+            foreach (Rental rental in customer.GetRentals())
+            {
+                iRentCount++;
+                KeyName = String.Format("{0}_Title{1}", sCustomerName, iRentCount);
+                String sRental_Title = rental.getMovie().getTitle();
+                WriteSection(KeyName, sRental_Title);
+
+                KeyName = String.Format("{0}_Proid{1}", sCustomerName, iRentCount);
+                String sRental_Proid = rental.getDaysRented().ToString();
+                WriteSection(KeyName, sRental_Proid);
+            }
+        }
+
         public List<Customer> ReadCustomerInfo(List<Movie> moviesList)
         {
             List<Customer> customerList = new List<Customer>();
@@ -220,6 +272,16 @@ namespace VideoRental
         private String ReadSection(String Key)
         {
             return ConfigurationManager.AppSettings[Key];
+        }
+
+        private void RemoveSection(String Key)
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            KeyValueConfigurationCollection cfgColletion = config.AppSettings.Settings;
+            cfgColletion.Remove(Key);
+
+            config.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
         }
 
     }

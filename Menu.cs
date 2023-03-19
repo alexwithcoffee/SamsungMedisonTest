@@ -299,7 +299,9 @@ namespace VideoRental
         {
             if(CheckMovie.getRentCheck())
             {
-                CheckCustomer.addRental(new Rental(CheckMovie, iInputPeriod));
+                Rental new_rent = new Rental(CheckMovie, iInputPeriod);
+                CheckCustomer.addRental(new_rent);
+                file.WriteRental(CheckCustomer, new_rent);
             }
             else
             {
@@ -309,7 +311,11 @@ namespace VideoRental
 
         private void ReturnProcess()
         {
-            if (!CheckCustomer.removeRental(new Rental(CheckMovie, 0)))
+            if (CheckCustomer.removeRental(new Rental(CheckMovie, 0)))
+            {
+                file.ReturnInfo(CheckCustomer);
+            }
+            else
             {
                 Console.WriteLine("This is not a movie that the customer rented!!");
             }

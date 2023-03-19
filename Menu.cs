@@ -194,15 +194,20 @@ namespace VideoRental
             Console.WriteLine("---Receipt Menu-----");
 
             InputCustomerID();
+
             PrintReceipt();
-            iMenu = iStartNumber;
+            
+            CheckClear();
             return;
         }
 
         private void InputCustomerID()
         {
-            Boolean check = false;
-            while (!check)
+            if(CheckCustomer != null)
+            {
+                Console.WriteLine(String.Format("Current Customer ID : {0}", CheckCustomer.getName()));
+            }
+            while (CheckCustomer == null)
             {
                 Console.Write("Input Customer ID : ");
                 sInputCustomer = Console.ReadLine().Trim();
@@ -211,15 +216,10 @@ namespace VideoRental
                     if (sInputCustomer == cust.getName())
                     {
                         CheckCustomer = cust;
-                        check = true;
                         break;
                     }
                 }
-                if (CheckCustomer != null)
-                {
-                    return;
-                }
-                else
+                if (CheckCustomer == null)
                 {
                     Console.WriteLine("Customer ID does not exist.");
                 }
@@ -228,8 +228,7 @@ namespace VideoRental
 
         private void InputVideoTitle()
         {
-            Boolean check = false;
-            while (!check)
+            while (true)
             {
                 Console.Write("Input Video Title : ");
                 sInputVideoTitle = Console.ReadLine();
@@ -238,7 +237,6 @@ namespace VideoRental
                     if (sInputVideoTitle == movie.getTitle())
                     {
                         CheckMovie = movie;
-                        check = true;
                         break;
                     }
                 }
@@ -282,11 +280,12 @@ namespace VideoRental
 
                 if (Continue == "Y" || Continue == "y")
                 {
+                    CheckClear(false);
                     return;
                 }
                 else if (Continue == "N" || Continue == "n")
                 {
-                    iMenu = iStartNumber;
+                    CheckClear();
                     return;
                 }
                 else
@@ -299,7 +298,6 @@ namespace VideoRental
         private void RentalProcess()
         {
             CheckCustomer.addRental(new Rental(CheckMovie, iInputPeriod));
-            CheckClear();
         }
 
         private void ReturnProcess()
@@ -308,18 +306,20 @@ namespace VideoRental
             {
                 Console.WriteLine("This is not a movie that the customer rented!!");
             }
-            CheckClear();
         }
 
         private void PrintReceipt()
         {
             Console.Write(CheckCustomer.statement());
-            CheckClear();
         }
 
-        private void CheckClear()
+        private void CheckClear(Boolean customer = true)
         {
-            CheckCustomer = null;
+            if(customer)
+            {
+                CheckCustomer = null;
+                iMenu = iStartNumber;
+            }
             CheckMovie = null;
             iInputPeriod = 0;
         }
